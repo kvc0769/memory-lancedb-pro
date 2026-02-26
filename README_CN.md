@@ -48,7 +48,7 @@ OpenClaw 内置的 `memory-lancedb` 插件仅提供基本的向量搜索。**mem
 | 管理 CLI | ❌ | ✅ |
 | Session 记忆 | ❌ | ✅ |
 | Task-aware Embedding | ❌ | ✅ |
-| 任意 OpenAI 兼容 Embedding | 有限 | ✅（OpenAI、Gemini、Jina、Ollama 等） |
+| 任意 OpenAI 兼容 Embedding | 有限 | ✅（OpenAI、Gemini、Jina、Ollama、火山引擎等） |
 
 ---
 
@@ -85,7 +85,7 @@ OpenClaw 内置的 `memory-lancedb` 插件仅提供基本的向量搜索。**mem
 | `package.json` | NPM 包信息，依赖 `@lancedb/lancedb`、`openai`、`@sinclair/typebox` |
 | `cli.ts` | CLI 命令实现：`memory list/search/stats/delete/delete-bulk/export/import/reembed/migrate` |
 | `src/store.ts` | LanceDB 存储层。表创建 / FTS 索引 / Vector Search / BM25 Search / CRUD / 批量删除 / 统计 |
-| `src/embedder.ts` | Embedding 抽象层。兼容 OpenAI API 的任意 Provider（OpenAI、Gemini、Jina、Ollama 等），支持 task-aware embedding（`taskQuery`/`taskPassage`） |
+| `src/embedder.ts` | Embedding 抽象层。兼容 OpenAI API 的任意 Provider（OpenAI、Gemini、Jina、Ollama 等）及火山引擎多模态 API，支持 task-aware embedding（`taskQuery`/`taskPassage`） |
 | `src/retriever.ts` | 混合检索引擎。Vector + BM25 → RRF 融合 → Jina Cross-Encoder Rerank → Recency Boost → Importance Weight → Length Norm → Time Decay → Hard Min Score → Noise Filter → MMR Diversity |
 | `src/scopes.ts` | 多 Scope 访问控制。支持 `global`、`agent:<id>`、`custom:<name>`、`project:<id>`、`user:<id>` 等 Scope 模式 |
 | `src/tools.ts` | Agent 工具定义：`memory_recall`、`memory_store`、`memory_forget`（核心）+ `memory_stats`、`memory_list`（管理） |
@@ -408,6 +408,23 @@ LanceDB 表 `memories`：
 | `@lancedb/lancedb` ≥0.26.2 | 向量数据库（ANN + FTS） |
 | `openai` ≥6.21.0 | OpenAI 兼容 Embedding API 客户端 |
 | `@sinclair/typebox` 0.34.48 | JSON Schema 类型定义（工具参数） |
+
+---
+
+## 更新日志
+
+### v1.1.0 (2026-02-26)
+
+**新增功能：**
+- ✨ 新增火山引擎多模态 Embedding API 支持（`volcengine-multimodal` provider）
+- ✨ 兼容 `Doubao-embedding-vision` 模型，通过 `/embeddings/multimodal` 端点
+- ✨ 处理火山引擎特有的响应格式 `{data: {embedding: [...]}}`
+
+**变更：**
+- 更新 `EmbeddingConfig` 接口，支持 `volcengine-multimodal` provider 类型
+- 在 `embedder.ts` 中新增 `fetchVolcengineMultimodal()` 方法
+- 更新 `openclaw.plugin.json` 中的 JSON Schema 以允许新的 provider
+- 更新文档，添加火山引擎配置示例
 
 ---
 

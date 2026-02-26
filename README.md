@@ -48,7 +48,7 @@ The built-in `memory-lancedb` plugin in OpenClaw provides basic vector search. *
 | Management CLI | ❌ | ✅ |
 | Session memory | ❌ | ✅ |
 | Task-aware embeddings | ❌ | ✅ |
-| Any OpenAI-compatible embedding | Limited | ✅ (OpenAI, Gemini, Jina, Ollama, etc.) |
+| Any OpenAI-compatible embedding | Limited | ✅ (OpenAI, Gemini, Jina, Ollama, Volcengine, etc.) |
 
 ---
 
@@ -85,7 +85,7 @@ The built-in `memory-lancedb` plugin in OpenClaw provides basic vector search. *
 | `package.json` | NPM package info. Depends on `@lancedb/lancedb`, `openai`, `@sinclair/typebox` |
 | `cli.ts` | CLI commands: `memory list/search/stats/delete/delete-bulk/export/import/reembed/migrate` |
 | `src/store.ts` | LanceDB storage layer. Table creation / FTS indexing / Vector search / BM25 search / CRUD / bulk delete / stats |
-| `src/embedder.ts` | Embedding abstraction. Compatible with any OpenAI-API provider (OpenAI, Gemini, Jina, Ollama, etc.). Supports task-aware embedding (`taskQuery`/`taskPassage`) |
+| `src/embedder.ts` | Embedding abstraction. Compatible with any OpenAI-API provider (OpenAI, Gemini, Jina, Ollama, etc.) and Volcengine multimodal API. Supports task-aware embedding (`taskQuery`/`taskPassage`) |
 | `src/retriever.ts` | Hybrid retrieval engine. Vector + BM25 → RRF fusion → Jina Cross-Encoder Rerank → Recency Boost → Importance Weight → Length Norm → Time Decay → Hard Min Score → Noise Filter → MMR Diversity |
 | `src/scopes.ts` | Multi-scope access control. Supports `global`, `agent:<id>`, `custom:<name>`, `project:<id>`, `user:<id>` |
 | `src/tools.ts` | Agent tool definitions: `memory_recall`, `memory_store`, `memory_forget` (core) + `memory_stats`, `memory_list` (management) |
@@ -491,6 +491,23 @@ LanceDB table `memories`:
 | `@lancedb/lancedb` ≥0.26.2 | Vector database (ANN + FTS) |
 | `openai` ≥6.21.0 | OpenAI-compatible Embedding API client |
 | `@sinclair/typebox` 0.34.48 | JSON Schema type definitions (tool parameters) |
+
+---
+
+## Changelog
+
+### v1.1.0 (2026-02-26)
+
+**New Features:**
+- ✨ Added Volcengine multimodal embedding API support (`volcengine-multimodal` provider)
+- ✨ Compatible with `Doubao-embedding-vision` model via `/embeddings/multimodal` endpoint
+- ✨ Handle Volcengine-specific response format `{data: {embedding: [...]}}`
+
+**Changes:**
+- Updated `EmbeddingConfig` interface to support `volcengine-multimodal` provider type
+- Added `fetchVolcengineMultimodal()` method in `embedder.ts`
+- Updated JSON Schema in `openclaw.plugin.json` to allow new provider
+- Updated documentation with Volcengine configuration examples
 
 ---
 
